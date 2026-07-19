@@ -1,4 +1,4 @@
-# OmniStream – Fleet Telemetry Lakehouse
+# OmniStream – Fleet Telemetry & Lakehouse Platform
 
 ## Overview
 
