@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+*.egg-info/
+.build/
+dist/
+build/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Notebook outputs
+*.nbconvert.ipynb
+
+# Data artifacts
+sample_data/generated/
+artifacts/
+outputs/
+*.joblib
+*.pkl
+
+# Spark / Databricks
+metastore_db/
+derby.log
+spark-warehouse/
+checkpoint/
+checkpoints/
+
+# Delta / local lakehouse paths
+bronze/
+silver/
+gold/
+_delta_log/
+
+# MongoDB local files
+mongodb-data/
+
+# Temporary files
+*.tmp
+*.swp

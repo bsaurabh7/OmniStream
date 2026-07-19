@@ -1,0 +1,4 @@
+vehicle_id,timestamp,vehicle_type,driver_id,trip_id,route_id,latitude,longitude,speed,rpm,engine_temperature,fuel_level,battery_voltage,gear,odometer,acceleration,brake_pressure,gps_accuracy,tire_pressure,outside_temperature,humidity,fuel_consumption,engine_status,heading,altitude
+VH-000001,2026-07-19T08:15:00Z,Sedan,DR-00001,TP-00000001,RT-0001,12.9716,77.5946,42.5,1820,91.4,63.2,12.58,3,12452.73,0.35,4.2,2.1,34.5,31.2,54.8,0.82,ON,82.4,245.3
+VH-000002,2026-07-19T08:15:00Z,Truck,DR-00017,TP-00000002,RT-0015,12.9351,77.6184,58.1,2360,96.7,54.9,12.42,4,85922.44,0.52,6.8,3.4,36.1,30.7,52.3,1.24,ON,94.1,318.7
+VH-000003,2026-07-19T08:15:00Z,Electric Vehicle,DR-00042,TP-00000003,RT-0008,12.9842,77.5601,33.8,920,74.5,0.0,13.21,1,34012.19,0.22,2.1,1.8,33.9,32.0,57.9,0.0,ON,76.9,279.5

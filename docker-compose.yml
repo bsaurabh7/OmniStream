@@ -1,0 +1,39 @@
+services:
+  spark:
+    image: bitnami/spark:3.5
+    container_name: omnistream-spark
+    environment:
+      - SPARK_MODE=master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    volumes:
+      - ./pyspark:/workspace/pyspark
+      - ./delta:/workspace/delta
+      - ./sample_data:/workspace/sample_data
+
+  mongo:
+    image: mongo:7
+    container_name: omnistream-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+
+  jupyter:
+    image: jupyter/pyspark-notebook:python-3.12
+    container_name: omnistream-jupyter
+    depends_on:
+      - spark
+      - mongo
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    volumes:
+      - ./:/workspace
+    working_dir: /workspace
+
+volumes:
+  mongodb-data:
