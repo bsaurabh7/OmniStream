@@ -1,81 +1,67 @@
-# OmniStream – Fleet Telemetry & Lakehouse
-
-![OmniStream Banner](images/banner.png)
-
-[![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
-[![Tests](https://img.shields.io/badge/Tests-pytest-green.svg)](https://docs.pytest.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Azure](https://img.shields.io/badge/Azure-Data%20Engineering-orange.svg)](https://azure.microsoft.com/)
+# OmniStream – Fleet Telemetry Lakehouse
 
 ## Overview
 
-OmniStream is a data engineering portfolio project that simulates connected vehicle telemetry and processes it through an Azure lakehouse pipeline.
+OmniStream is a streaming data platform that simulates connected vehicle telemetry and processes events through an Azure-based lakehouse architecture.
 
-The project demonstrates real-world data engineering concepts:
+The platform ingests vehicle sensor data in real time, applies data quality transformations, stores analytics-ready datasets using Delta Lake, detects abnormal vehicle behavior with machine learning, and provides operational insights through BI dashboards.
+
+The project implements a complete data engineering workflow:
 
 - Real-time telemetry ingestion
-- Spark Structured Streaming
-- Delta Lake architecture
-- Data cleaning and transformation
+- Spark Structured Streaming processing
+- Delta Lake medallion architecture
+- Data validation and transformation
 - Machine learning anomaly detection
-- Operational storage
-- BI-ready analytics
-
-The goal is to build a practical streaming data platform similar to systems used in modern fleet monitoring solutions.
-
----
-
-# Business Problem
-
-Fleet operators collect millions of vehicle events every day. Raw telemetry data is difficult to analyze without proper processing.
-
-OmniStream provides a solution by:
-
-- Collecting vehicle sensor data in real time
-- Validating and cleaning incoming events
-- Creating analytics-ready datasets
-- Detecting abnormal vehicle behavior
-- Supporting operational dashboards
+- Operational anomaly storage
+- Analytics-ready reporting
 
 ---
 
 # Architecture
 
+```mermaid
+flowchart LR
+
+A[Vehicle Simulator]
+--> B[Azure Event Hubs]
+
+B
+--> C[Azure Databricks<br/>Structured Streaming]
+
+C
+--> D[Bronze Delta Lake<br/>Raw Events]
+
+D
+--> E[Silver Delta Lake<br/>Clean Data]
+
+E
+--> F[Gold Delta Lake<br/>Business Metrics]
+
+F
+--> G[Power BI Dashboard]
+
+E
+--> H[Isolation Forest Model]
+
+H
+--> I[MongoDB Atlas]
 ```
-Vehicle Simulator
-        |
-        v
-Azure Event Hubs
-        |
-        v
-Databricks Structured Streaming
-        |
-        v
-+----------------+
-| Bronze Delta   |
-| Raw Events     |
-+----------------+
-        |
-        v
-+----------------+
-| Silver Delta   |
-| Clean Data     |
-+----------------+
-        |
-        v
-+----------------+
-| Gold Delta     |
-| Business KPIs  |
-+----------------+
-        |
-        +----------------+
-        |                |
-        v                v
-Isolation Forest     Power BI
-        |
-        v
-MongoDB Atlas
-```
+
+---
+
+# Business Problem
+
+Fleet operators generate large volumes of telemetry data from connected vehicles.
+
+Without proper processing, raw telemetry is difficult to use for:
+
+- Vehicle monitoring
+- Maintenance decisions
+- Performance analysis
+- Operational reporting
+
+OmniStream provides a scalable pipeline for transforming raw vehicle events into trusted datasets and actionable insights.
 
 ---
 
@@ -83,117 +69,189 @@ MongoDB Atlas
 
 ## Data Engineering
 
-- Python 3.12
-- PySpark
-- Azure Event Hubs
-- Azure Databricks
-- Azure Data Lake Storage Gen2
-- Delta Lake
+| Technology | Purpose |
+|---|---|
+| Python 3.12 | Application development |
+| PySpark | Distributed processing |
+| Azure Event Hubs | Real-time ingestion |
+| Azure Databricks | Streaming workloads |
+| Delta Lake | Lakehouse storage |
+| Azure Data Lake Storage Gen2 | Cloud storage |
 
 ## Machine Learning
 
-- pandas
-- NumPy
-- scikit-learn
-- Isolation Forest
+| Technology | Purpose |
+|---|---|
+| pandas | Data processing |
+| NumPy | Numerical operations |
+| scikit-learn | Machine learning |
+| Isolation Forest | Anomaly detection |
 
 ## Storage & Analytics
 
-- MongoDB Atlas
-- Power BI
+| Technology | Purpose |
+|---|---|
+| MongoDB Atlas | Operational anomaly storage |
+| Power BI | Business dashboards |
 
-## Development Tools
+## Development
 
-- Docker
-- pytest
-- GitHub Actions
-- python-dotenv
-
----
-
-# Repository Structure
-
-```
-OmniStream-Fleet-Telemetry-Lakehouse/
-
-├── vehicle_simulator/     # Generates telemetry events
-├── streaming/             # Event ingestion components
-├── pyspark/               # Spark streaming jobs
-├── delta/                 # Bronze, Silver, Gold layers
-├── ml/                    # ML anomaly detection
-├── mongodb/               # MongoDB integration
-├── powerbi/               # Dashboard documentation
-├── config/                # Configuration management
-├── tests/                 # Automated tests
-├── scripts/               # Utility scripts
-├── docs/                  # Documentation
-└── sample_data/           # Sample telemetry data
-```
+| Technology | Purpose |
+|---|---|
+| Docker | Local services |
+| pytest | Automated testing |
+| GitHub Actions | CI/CD |
+| python-dotenv | Configuration management |
 
 ---
 
-# Data Pipeline
+# Data Architecture
+
+OmniStream follows a Bronze → Silver → Gold lakehouse architecture.
 
 ## Bronze Layer
 
-Stores raw vehicle telemetry events.
+The Bronze layer stores raw telemetry events as received from vehicles.
 
 Example fields:
 
-- Vehicle ID
-- Timestamp
-- GPS location
-- Speed
-- Fuel level
-- Engine temperature
-- Battery status
+```text
+vehicle_id
+timestamp
+latitude
+longitude
+speed
+fuel_level
+engine_temperature
+battery_status
+```
+
+Responsibilities:
+
+- Raw event ingestion
+- Schema preservation
+- Historical storage
 
 ---
 
 ## Silver Layer
 
-Transforms raw events into clean data.
+The Silver layer creates clean and validated telemetry data.
 
-Operations include:
+Processing includes:
 
 - Schema validation
+- Data type conversion
+- Duplicate removal
+- Missing value handling
 - Data quality checks
-- Deduplication
-- Watermark handling
-- Data cleaning
+- Event watermarking
+
+Output:
+
+Clean telemetry records suitable for analytics and machine learning.
 
 ---
 
 ## Gold Layer
 
-Creates business-ready datasets:
+The Gold layer contains business-ready datasets.
 
-- Fleet health score
-- Vehicle performance metrics
-- Fuel consumption analysis
+Examples:
+
+### Fleet Performance
+
+- Vehicle utilization
+- Average speed
+- Fuel consumption
+- Daily fleet activity
+
+### Vehicle Health
+
+- Engine temperature trends
+- Battery monitoring
+- Fleet health scores
+
+### Route Analytics
+
+- Distance analysis
 - Route statistics
-- Daily fleet summaries
+- Vehicle movement patterns
 
 ---
 
-# Machine Learning
+# Machine Learning Pipeline
 
-OmniStream uses Isolation Forest for anomaly detection.
+OmniStream uses Isolation Forest to identify abnormal vehicle behavior.
 
-The model identifies:
+The model detects patterns such as:
 
 - Abnormal engine temperature
-- Sudden fuel changes
-- Unexpected speed patterns
-- Battery problems
+- Sudden fuel level changes
+- Unexpected speed variations
+- Battery issues
 
-Detected anomalies are stored in MongoDB Atlas for operational analysis.
+Pipeline:
+
+```text
+Silver Telemetry Data
+        |
+        v
+Feature Engineering
+        |
+        v
+Isolation Forest Model
+        |
+        v
+Anomaly Detection
+        |
+        v
+MongoDB Atlas
+```
+
+Detected anomalies are stored separately for operational monitoring.
 
 ---
 
-# Installation
+# Repository Structure
+
+```text
+OmniStream-Fleet-Telemetry-Lakehouse/
+
+├── vehicle_simulator/       # Generates telemetry events
+├── streaming/               # Event ingestion components
+├── pyspark/                 # Spark streaming jobs
+├── delta/                   # Bronze, Silver, Gold layers
+├── ml/                      # ML anomaly detection
+├── mongodb/                 # MongoDB integration
+├── powerbi/                 # Dashboard documentation
+├── config/                  # Configuration management
+├── tests/                   # Automated tests
+├── scripts/                 # Utility scripts
+├── docs/                    # Documentation
+├── sample_data/             # Sample telemetry data
+├── requirements.txt
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+# Local Setup
+
+## Clone Repository
+
+```bash
+git clone <repository-url>
+
+cd OmniStream-Fleet-Telemetry-Lakehouse
+```
+
+---
 
 ## Create Virtual Environment
+
+### Python
 
 ```bash
 python -m venv .venv
@@ -205,7 +263,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-For Conda:
+### Conda
 
 ```bash
 conda env create -f environment.yml
@@ -217,52 +275,60 @@ conda activate omnistream
 
 # Configuration
 
-Create your environment file:
+Create environment variables:
 
 ```bash
 cp .env.example .env
 ```
 
-Configure:
+Required configuration:
 
-- Azure Event Hub connection
-- ADLS Gen2 storage
-- MongoDB connection
-- Application settings
+```env
+AZURE_EVENTHUB_CONNECTION_STRING=
+AZURE_STORAGE_ACCOUNT=
+AZURE_STORAGE_KEY=
+MONGODB_CONNECTION_STRING=
+```
 
-No secrets are stored inside the repository.
+Secrets are not stored inside the repository.
 
 ---
 
 # Running Locally
 
-Typical execution flow:
-
-### 1. Start services
+## Start Services
 
 ```bash
 docker compose up
 ```
 
-### 2. Generate telemetry
+---
+
+## Generate Vehicle Telemetry
 
 ```bash
 python vehicle_simulator/main.py
 ```
 
-### 3. Run Spark streaming pipeline
+---
+
+## Run Spark Streaming Pipeline
 
 ```bash
 python pyspark/streaming_job.py
 ```
 
-### 4. Train anomaly detection model
+---
+
+## Train ML Model
 
 ```bash
 python ml/train.py
 ```
 
-### 5. Score new events
+---
+
+## Run Anomaly Prediction
 
 ```bash
 python ml/predict.py
@@ -272,68 +338,97 @@ python ml/predict.py
 
 # Azure Deployment
 
-Cloud architecture includes:
+The cloud architecture uses the following services:
 
 ## Azure Event Hubs
 
-Used for real-time vehicle telemetry ingestion.
+Responsible for:
+
+- Receiving vehicle telemetry events
+- Handling high-throughput streaming data
 
 ## Azure Databricks
 
-Used for:
+Responsible for:
 
-- Structured Streaming
+- Structured Streaming jobs
 - Spark transformations
 - Delta Lake processing
 
 ## Azure Data Lake Storage Gen2
 
-Used for:
+Stores:
 
-- Bronze storage
-- Silver storage
+- Bronze datasets
+- Silver datasets
 - Gold analytics tables
 
 ## Power BI
 
-Used for fleet dashboards and reporting.
+Provides:
+
+- Fleet dashboards
+- Vehicle monitoring
+- Business reporting
 
 ---
 
 # MongoDB Integration
 
-MongoDB Atlas stores anomaly events.
+MongoDB Atlas stores detected anomaly events.
 
-Features include:
+Features:
 
-- Connection management
-- Collection creation
-- Index management
-- Retry handling
+- Database connection management
+- Collection management
+- Index creation
 - CRUD operations
+- Retry handling
+
+Example anomaly document:
+
+```json
+{
+  "vehicle_id": "VH1001",
+  "event_type": "engine_temperature",
+  "value": 145,
+  "severity": "high",
+  "timestamp": "2026-01-01T12:00:00"
+}
+```
 
 ---
 
-# Power BI Dashboard
+# Power BI Analytics
 
 Gold datasets support dashboards for:
 
+## Fleet Overview
+
 - Vehicle count
-- Average speed
+- Active vehicles
+- Fleet health score
+
+## Vehicle Monitoring
+
+- Speed trends
 - Fuel consumption
 - Engine temperature
 - Battery health
-- Fleet health score
-- Route analysis
-- Anomaly monitoring
+
+## Anomaly Monitoring
+
+- Active alerts
+- Vehicle risk ranking
+- Abnormal event tracking
 
 ---
 
 # Testing
 
-Testing uses pytest.
+Testing is implemented using pytest.
 
-Test coverage includes:
+Coverage includes:
 
 - Simulator functions
 - Spark transformations
@@ -348,28 +443,42 @@ pytest
 
 ---
 
-# Future Enhancements
+# CI/CD
 
-- Add geofencing alerts
-- Add route optimization analytics
-- Improve anomaly detection models
-- Add Databricks notebooks
-- Create complete Power BI dashboards
-- Add CI/CD deployment pipelines
+GitHub Actions can automate:
+
+- Dependency installation
+- Unit testing
+- Code validation
+- Deployment workflows
 
 ---
 
-# Learning Outcomes
+# Future Improvements
 
-This project demonstrates:
+Planned enhancements:
 
-- Streaming data engineering
-- Azure cloud architecture
-- Lakehouse design patterns
+- Geofencing alerts
+- Predictive maintenance models
+- Route optimization analytics
+- Databricks notebooks
+- Infrastructure as Code deployment
+- Automated Azure deployment pipelines
+
+---
+
+# Skills Demonstrated
+
+This project demonstrates experience with:
+
+- Streaming data pipelines
+- Azure cloud services
+- Lakehouse architecture
 - Spark Structured Streaming
-- Delta Lake implementation
+- Delta Lake
+- Data quality engineering
 - Machine learning integration
-- Production-style project organization
+- Operational analytics systems
 
 ---
 
